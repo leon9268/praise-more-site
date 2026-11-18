@@ -287,6 +287,12 @@ section{position:relative}
 .lead{font-size:clamp(22px,2.4vw,32px);line-height:1.55;font-weight:700;letter-spacing:-.01em;margin-bottom:clamp(40px,5vw,70px)}
 .lead::first-letter{color:var(--green)}
 .feature-img{border-radius:var(--radius);overflow:hidden;margin-bottom:clamp(40px,5vw,64px);border:1px solid var(--line);background:#fff}
+.feature-img img{display:block;width:100%;height:auto}
+.photo{position:relative}
+.photo img{aspect-ratio:1600/893;object-fit:cover}
+.photo__note{position:absolute;right:14px;bottom:12px;font-size:12px;line-height:1;padding:6px 10px;border-radius:999px;background:rgba(7,18,10,.62);color:#fff;letter-spacing:.08em}
+.photo-band{margin-top:clamp(40px,6vw,80px)}
+.photo-band .feature-img{margin-bottom:0}
 .block{padding:clamp(36px,4vw,56px) 0;border-top:1px solid var(--line)}
 .block h2{font-size:clamp(26px,2.8vw,40px);font-weight:900;letter-spacing:-.015em;margin-bottom:10px}
 .block > p{color:var(--muted);font-size:17px;margin-bottom:26px}

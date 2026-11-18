@@ -235,3 +235,18 @@ PROJECT.md                 本文件
 - 聲稱只跟美國 EPA 標籤（GoldShield 75，EPA Reg. No. 85556-2，微生物抑制劑）：抑制引致異味、污漬的細菌及霉菌，最長 90 日
 - 未寫殺病毒／99.99%／新冠等聲稱：EPA 標籤無此批准，需供應商提供所用型號的獨立實驗室報告先可加入
 - 寫明 Praise More「使用 GoldShield® 產品」，並非香港授權服務供應商
+
+## 12. 2026-11-18 網站配圖（Google Flow AI 示意圖）
+- 用 Google Flow（Nano Banana 2.1，PRO 帳戶）生成 22 張 16:9 配圖，每條指示生成 2 張揀 1 張；原圖存 `static/assets/photos/src/`（已 gitignore，不上傳）
+- 輸出：`static/assets/photos/<名>.webp`（1600px）、`<名>-800.webp`（手機）、`og/<名>.jpg`（1200×630 分享縮圖）；原圖闊 1376px，放大至 1600px
+- 放置：首頁、關於我們、學校專區（hero 下第一個 section）、16 個服務頁（lead 段落之上）、3 篇文章（標題下）
+- `content/site.json` 每頁加 `photo`、`photoAlt`；`og:image` 及 JSON-LD（Service／Article `image`）改用該頁圖片
+- 全部圖片均為 AI 生成示意圖；GoldShield、校園清潔兩頁圖片標示「示意圖」
+- AI 到校課程、「智」啟學教計劃兩頁頁面仍用舊網圖（連去 praise.com.hk），待決定；新 AI 圖已備用作分享縮圖
+- 重新生成過：GoldShield（噴霧似粉塵 → 改為幼細透明噴霧）、AI 到校課程（學生打領呔、襟章似真實校徽 → 改素白恤衫）、影子老師文章（作業簿出現亂碼字 → 改空白作業簿）、校本／智啟學教等學生場景加入「無校徽」要求
+
+### 待辦
+- [ ] 許秀香老師（Sarah Hui）個人照：需真相，不可用 AI
+- [ ] GoldShield 產品樽身標籤相：需真相，不可用 AI
+- [ ] 兩段背景短片（首頁、GoldShield）：待 Leon 確認後先生成
+- [ ] 決定 AI 到校課程、智啟學教兩頁是否改用新圖（舊圖仍連去舊網）

@@ -25,6 +25,8 @@
     }
   },
   "home": {
+    "photo": "home",
+    "photoAlt": "幼稚園老師陪伴兩名幼兒砌積木",
     "eyebrow": "家庭及校園專業支援配對平台",
     "heroLines": [
       "為每一個孩子",
@@ -88,6 +90,8 @@
     }
   },
   "about": {
+    "photo": "about",
+    "photoAlt": "Praise More 教育團隊圍坐開會討論",
     "intro": "Praise 深耕香港幼兒教育 18 年，服務超過三萬個家庭。Praise More 是香港專業的支援服務配對平台，為家長和學校嚴選專業導師網絡。",
     "mission": "我們相信每個孩子都值得被理解，讓孩子在充滿愛與專業的環境中茁壯成長。",
     "process": [
@@ -177,6 +181,8 @@
   "services": [
     {
       "slug": "home-classes",
+      "photo": "home-classes",
+      "photoAlt": "上門興趣班導師在家中教小朋友彈電子琴",
       "category": "family",
       "icon": "home",
       "name": "上門興趣班",
@@ -224,6 +230,8 @@
     },
     {
       "slug": "centre-classes",
+      "photo": "centre-classes",
+      "photoAlt": "幼兒在中心興趣班圍坐圓桌做美勞活動，老師從旁指導",
       "category": "family",
       "icon": "spark",
       "name": "中心興趣班",
@@ -257,6 +265,8 @@
     },
     {
       "slug": "online-classes",
+      "photo": "online-classes",
+      "photoAlt": "小朋友在家用手提電腦上網上興趣班，向老師揮手",
       "category": "family",
       "icon": "screen",
       "name": "網上興趣班",
@@ -286,6 +296,8 @@
     },
     {
       "slug": "domestic-helper-matching",
+      "photo": "domestic-helper-matching",
+      "photoAlt": "外傭在家中為小朋友講故事",
       "category": "family",
       "icon": "people",
       "name": "外傭聘請配對",
@@ -298,6 +310,8 @@
     },
     {
       "slug": "sen-support",
+      "photo": "sen-support",
+      "photoAlt": "SEN 導師以圖卡與幼兒溝通，進行專業支援",
       "category": "family",
       "icon": "heart",
       "name": "SEN 專業支援",
@@ -393,6 +407,8 @@
     },
     {
       "slug": "sen-classes",
+      "photo": "sen-classes",
+      "photoAlt": "SEN 興趣班導師帶領幼兒進行感統遊戲",
       "category": "family",
       "icon": "star",
       "name": "SEN 興趣班",
@@ -415,6 +431,8 @@
     },
     {
       "slug": "shadow-teacher-tutoring",
+      "photo": "shadow-teacher-tutoring",
+      "photoAlt": "影子老師在小學課室陪伴學生上課",
       "category": "family",
       "icon": "book",
       "name": "影子老師及私人補習",
@@ -535,6 +553,8 @@
     },
     {
       "slug": "brain-training",
+      "photo": "brain-training",
+      "photoAlt": "小朋友專注完成拼圖遊戲，導師在旁觀察記錄",
       "category": "family",
       "icon": "brain",
       "name": "腦效能評估及訓練",
@@ -601,6 +621,8 @@
     },
     {
       "slug": "school-based-classes",
+      "photo": "school-based-classes",
+      "photoAlt": "小學生在校本興趣班參與戲劇及音樂活動",
       "category": "school",
       "icon": "palette",
       "name": "校本興趣班",
@@ -670,6 +692,8 @@
     },
     {
       "slug": "school-brain-programme",
+      "photo": "school-brain-programme",
+      "photoAlt": "小學生在校本腦效能計劃中進行專注力卡牌訓練",
       "category": "school",
       "icon": "brain",
       "name": "校本腦效能提升計劃",
@@ -714,6 +738,8 @@
     },
     {
       "slug": "school-support",
+      "photo": "school-support",
+      "photoAlt": "老師與支援專員在教員室商討學生學習計劃",
       "category": "school",
       "icon": "school",
       "name": "到校支援服務",
@@ -761,6 +787,8 @@
     },
     {
       "slug": "ai-school-courses",
+      "photo": "ai-school-courses",
+      "photoAlt": "中學生在電腦室兩人一組使用 AI 聊天機械人上 AI 到校課程",
       "category": "school",
       "icon": "chip",
       "name": "AI 到校課程",
@@ -925,6 +953,8 @@
     },
     {
       "slug": "smart-learning-plan",
+      "photo": "smart-learning-plan",
+      "photoAlt": "老師以互動顯示屏講解數據圖表，配合「智」啟學教計劃",
       "category": "school",
       "icon": "network",
       "name": "「智」啟學教計劃",
@@ -1127,6 +1157,8 @@
     },
     {
       "slug": "home-cleaning",
+      "photo": "home-cleaning",
+      "photoAlt": "清潔人員為兒童睡房進行家居清潔及消毒",
       "category": "environment",
       "icon": "leaf",
       "name": "家居清潔及消毒",
@@ -1180,6 +1212,8 @@
     },
     {
       "slug": "campus-cleaning",
+      "photo": "campus-cleaning",
+      "photoAlt": "清潔人員為幼稚園課室門柄及桌面進行校園清潔及消毒",
       "category": "environment",
       "icon": "shield",
       "name": "校園清潔及消毒",
@@ -1237,6 +1271,8 @@
     },
     {
       "slug": "goldshield-coating",
+      "photo": "goldshield-coating",
+      "photoAlt": "技術人員為空置課室書桌噴上長效抗菌塗層",
       "category": "environment",
       "icon": "shield",
       "name": "GoldShield® 長效抗菌塗層",
@@ -1489,6 +1525,8 @@
     }
   },
   "schools": {
+    "photo": "schools",
+    "photoAlt": "校長與教育顧問在小學走廊握手",
     "seoTitle": "學校服務專區｜津貼運用、導師審查及報價｜Praise More",
     "seoDesc": "為幼稚園、小學、中學及特殊學校提供 AI 到校課程、校本興趣班、到校 SEN 支援及校園消毒。附 2026/27 教育局津貼對應及報價表格，一個工作天內回覆。",
     "lead": "為幼稚園、小學、中學及特殊學校提供一站式校本支援：AI 到校課程、校本興趣班、到校 SEN 支援及校園清潔消毒。所有導師均已完成性罪行定罪紀錄查核，報價一個工作天內回覆。",
@@ -1571,6 +1609,8 @@
   "articles": [
     {
       "slug": "what-is-shadow-teacher",
+      "photo": "article-what-is-shadow-teacher",
+      "photoAlt": "大人輕握小朋友的手，引導執筆寫字",
       "title": "影子老師是甚麼？香港家長請影子老師前要知的 7 件事",
       "desc": "影子老師是甚麼、適合哪些孩子、學校是否接受、怎樣揀導師？香港家長請影子老師前的 7 個重點。",
       "date": "2026-11-18",
@@ -1657,6 +1697,8 @@
     },
     {
       "slug": "smart-learning-grant-guide",
+      "photo": "article-smart-learning-grant-guide",
+      "photoAlt": "教師桌上的手提電腦顯示 AI 圖示，旁邊放有教案",
       "title": "「智」啟學教 50 萬撥款點用？學校 AI 教育三年規劃指南",
       "desc": "教育局向公帑資助學校發放一筆過 50 萬元「智」啟學教撥款，為期三年。學校可以點樣規劃 AI 課程、教師培訓及校本系統？",
       "date": "2026-11-18",
@@ -1726,6 +1768,8 @@
     },
     {
       "slug": "antimicrobial-coating-vs-disinfection",
+      "photo": "article-antimicrobial-coating-vs-disinfection",
+      "photoAlt": "陽光灑落在整潔明亮的空置課室書桌上",
       "title": "學校長效抗菌塗層和一般消毒有甚麼分別？校長及老師要知的 6 件事",
       "desc": "長效抗菌塗層是甚麼、可維持多久、能否取代消毒、小朋友幾時可返回課室？學校安排抗菌塗層前的 6 個重點。",
       "date": "2026-11-18",

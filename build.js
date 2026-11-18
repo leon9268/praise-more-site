@@ -58,10 +58,17 @@ const ICONS = {
 };
 const icon = (n, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n] || ICONS.spark}</svg>`;
 const WA_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1l-.9 1.2c-.2.2-.3.2-.6.1a8.2 8.2 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.6.7.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.4 5 5.2-1.4A10 10 0 1 0 12 2zm0 18.3a8.3 8.3 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.3 8.3 0 1 1 12 20.3z"/></svg>';
-const MARK = '<img src="/assets/logo-192.png" alt="" width="40" height="40">';
+const ILLUS = ['goldshield-coating', 'campus-cleaning'];
+const ogImg = ph => ph ? `${SITE}/assets/photos/og/${ph}.jpg` : '';
+function photo(ph, alt, { lazy = false } = {}) {
+  if (!ph) return '';
+  const src = `/assets/photos/${ph}`;
+  return `<figure class="feature-img photo" data-reveal><picture><source type="image/webp" srcset="${src}-800.webp 800w, ${src}.webp 1600w" sizes="(max-width:820px) 100vw, 900px"><img src="${src}.webp" alt="${esc(alt)}" width="1600" height="893"${lazy ? ' loading="lazy"' : ''} decoding="async"></picture>${ILLUS.includes(ph) ? '<figcaption class="photo__note">示意圖</figcaption>' : ''}</figure>`;
+}
+const MARK ='<img src="/assets/logo-192.png" alt="" width="40" height="40">';
 
 /* ---------- shell ---------- */
-function head({ title, full, desc, url, graph = [], type = 'website' }) {
+function head({ title, full, desc, url, graph = [], type = 'website', image = '' }) {
   const t = full || (title ? `${title}｜Praise More` : S.title);
   const abs = SITE + url;
   const g = { '@context': 'https://schema.org', '@graph': [ORG, ...graph] };
@@ -76,7 +83,7 @@ function head({ title, full, desc, url, graph = [], type = 'website' }) {
 <link rel="canonical" href="${abs}">
 <link rel="icon" href="/assets/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta property="og:image" content="${SITE}/assets/logo-512.png">
+${image ? `<meta property="og:image" content="${image}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">` : `<meta property="og:image" content="${SITE}/assets/logo-512.png">`}
 ${ld(g)}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -173,12 +180,13 @@ function pageHome() {
   const steps = D.about.process.map((s, i) => `<div class="step" style="--i:${i + 1}"><span class="step__n">0${i + 1}</span><h3>${esc(s)}</h3><div class="step__bar"></div></div>`).join('');
   const news = H.news.items.map(n => `<div class="news__row"><b>${esc(n.label)}</b><span>${esc(n.text)}</span></div>`).join('');
   const ms = D.history.milestones.map((m, i) => `<div class="ms" data-reveal data-reveal-delay="${i}"><span class="ms__tag">${esc(m.tag)}</span><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></div>`).join('');
-  return head({ full: S.seoTitle, url: '/', graph: [{ '@type': 'WebSite', '@id': `${SITE}/#web`, url: `${SITE}/`, name: 'Praise More', inLanguage: 'zh-HK', publisher: { '@id': `${SITE}/#org` } }] }) + header('home') + `<main id="main">
+  return head({ full: S.seoTitle, url: '/', image: ogImg(H.photo), graph: [{ '@type': 'WebSite', '@id': `${SITE}/#web`, url: `${SITE}/`, name: 'Praise More', inLanguage: 'zh-HK', publisher: { '@id': `${SITE}/#org` } }] }) + header('home') + `<main id="main">
   ${hero({ variant: 'home', eyebrow: H.eyebrow, title: H.heroLines, lead: H.intro, home: true })}
   ${marquee}
   <section class="sec"><div class="wrap">
     <span class="kicker">ABOUT · 關於我們</span>
     <p class="statement">${wrapWords(H.missionTitle)}</p>
+    <div class="photo-band">${photo(H.photo, H.photoAlt)}</div>
     <div class="stats">${stats}</div>
   </div></section>
   <section class="sec sec--tint" id="services"><div class="wrap">
@@ -245,20 +253,20 @@ function pageService(s) {
   const rel = (others.length ? others : D.services.filter(x => x.slug !== s.slug).slice(0, 3));
   const isSchool = s.category === 'school' || s.slug === 'campus-cleaning';
   const graph = [
-    { '@type': 'Service', '@id': `${SITE}${svcUrl(s)}#service`, name: s.name, serviceType: s.name, description: s.summary || s.intro, provider: { '@id': `${SITE}/#org` }, areaServed: { '@type': 'AdministrativeArea', name: 'Hong Kong' }, audience: { '@type': 'Audience', audienceType: isSchool ? '學校' : '家長' }, url: SITE + svcUrl(s) },
+    { '@type': 'Service', '@id': `${SITE}${svcUrl(s)}#service`, name: s.name, ...(s.photo ? { image: ogImg(s.photo) } : {}), serviceType: s.name, description: s.summary || s.intro, provider: { '@id': `${SITE}/#org` }, areaServed: { '@type': 'AdministrativeArea', name: 'Hong Kong' }, audience: { '@type': 'Audience', audienceType: isSchool ? '學校' : '家長' }, url: SITE + svcUrl(s) },
     crumbLD([['主頁', '/'], ['服務介紹', '/services/'], [s.name, svcUrl(s)]])
   ];
   if (s.faq?.length) graph.push(faqLD(s.faq));
   const cta = isSchool
     ? `<a class="btn btn--lime" href="${QUOTE}">${icon('mail')}索取報價</a>`
     : `<a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}立即查詢</a>`;
-  return head({ title: s.name, full: s.seoTitle, desc: s.seoDesc || `${s.name}：${s.subtitle}。${s.intro}`.slice(0, 160), url: svcUrl(s), graph }) + header('services') + `<main id="main">
+  return head({ title: s.name, full: s.seoTitle, desc: s.seoDesc || `${s.name}：${s.subtitle}。${s.intro}`.slice(0, 160), url: svcUrl(s), graph, image: ogImg(s.photo) }) + header('services') + `<main id="main">
   ${hero({ variant: s.category, eyebrow: `${c.name} · ${c.tagline}`, title: [s.name], lead: s.subtitle, crumbs: `<a href="/">主頁</a> / <a href="/services/">服務介紹</a> / ${esc(s.name)}`, cta: false })}
   <section class="sec"><div class="wrap detail">
     <aside class="aside"><h4>${esc(c.name)}</h4><nav>${sib.map(x => `<a href="${svcUrl(x)}"${x.slug === s.slug ? ' aria-current="page"' : ''}>${esc(x.name)}</a>`).join('')}</nav>
       ${isSchool ? `<a class="btn btn--lime" href="${QUOTE}">${icon('mail')}索取報價</a>` : `<a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp 查詢</a>`}</aside>
     <article>
-      ${s.image ? `<figure class="feature-img" data-reveal><img src="${IMG}${s.image}" alt="${esc(s.name)}" loading="lazy"></figure>` : ''}
+      ${s.image ? `<figure class="feature-img" data-reveal><img src="${IMG}${s.image}" alt="${esc(s.photoAlt || s.name)}"></figure>` : photo(s.photo, s.photoAlt)}
       <p class="lead" data-reveal>${esc(s.summary || s.intro)}</p>
       ${s.summary ? `<p class="intro2" data-reveal>${esc(s.intro)}</p>` : ''}
       ${blocks}
@@ -276,12 +284,12 @@ function pageService(s) {
 
 function pageAbout() {
   const A = D.about;
-  return head({ full: P.about?.seoTitle, desc: P.about?.seoDesc, url: '/about/', graph: [crumbLD([['主頁', '/'], ['關於我們', '/about/']])] }) + header('about') + `<main id="main">
+  return head({ full: P.about?.seoTitle, desc: P.about?.seoDesc, url: '/about/', image: ogImg(A.photo), graph: [crumbLD([['主頁', '/'], ['關於我們', '/about/']])] }) + header('about') + `<main id="main">
   ${hero({ variant: 'about', eyebrow: 'ABOUT · 關於我們', title: ['關於我們'], lead: A.intro, crumbs: '<a href="/">主頁</a> / 關於我們' })}
   <section class="sec"><div class="wrap split">
     <div><span class="kicker">OUR MISSION · 我們的使命</span><p class="statement" style="font-size:clamp(26px,3vw,44px)">${wrapWords(A.mission)}</p></div>
     <div class="orb3d" data-reveal aria-hidden="true"></div>
-  </div></section>
+  </div><div class="wrap photo-band">${photo(A.photo, A.photoAlt)}</div></section>
   <section class="sec sec--dark"><div class="wrap">
     <div class="sec-head"><div><span class="kicker">HOW IT WORKS</span><h2 data-reveal>專業配對流程</h2></div><p data-reveal data-reveal-delay="1">${esc(A.intro)}</p></div>
     <ol class="flow">${A.process.map((p, i) => `<li data-reveal data-reveal-delay="${i % 4}"><span>${esc(p)}</span></li>`).join('')}</ol>
@@ -345,10 +353,11 @@ function pageSchools() {
   const schoolSvcs = D.services.filter(x => x.category === 'school' || ['campus-cleaning', 'goldshield-coating'].includes(x.slug));
   const graph = [crumbLD([['主頁', '/'], ['學校專區', '/schools/']]), faqLD(Sc.faq)];
   const opts = schoolSvcs.map(x => `<label class="chk"><input type="checkbox" name="services" value="${esc(x.name)}"><span>${esc(x.name)}</span></label>`).join('');
-  return head({ full: Sc.seoTitle, desc: Sc.seoDesc, url: '/schools/', graph }) + header('schools') + `<main id="main">
+  return head({ full: Sc.seoTitle, desc: Sc.seoDesc, url: '/schools/', graph, image: ogImg(Sc.photo) }) + header('schools') + `<main id="main">
   ${hero({ variant: 'school', eyebrow: 'FOR SCHOOLS · 學校專區', title: ['學校服務專區'], lead: Sc.lead, crumbs: '<a href="/">主頁</a> / 學校專區', cta: false })}
   <section class="sec"><div class="wrap">
     <div class="sec-head"><div><span class="kicker">SERVICES · 學校服務</span><h2 data-reveal>為學校而設的服務</h2></div><p data-reveal>按學校類別、學生程度及時間表度身安排，並提供服務報告，方便學校申報津貼。</p></div>
+    <div class="photo-band">${photo(Sc.photo, Sc.photoAlt)}</div>
     <div class="related">${schoolSvcs.map(x => `<a class="rel" href="${svcUrl(x)}" data-reveal><small>${esc(cats[x.category].name)}</small><h3>${esc(x.name)}</h3><span>${esc(x.subtitle)}</span></a>`).join('')}</div>
   </div></section>
   <section class="sec sec--tint"><div class="wrap">
@@ -430,15 +439,16 @@ function pageArticles() {
 function pageArticle(a) {
   const au = S.author || {};
   const graph = [
-    { '@type': 'Article', '@id': `${SITE}${artUrl(a)}#article`, headline: a.title, description: a.desc, datePublished: a.date, dateModified: a.modified || a.date, inLanguage: 'zh-HK', mainEntityOfPage: SITE + artUrl(a), image: `${SITE}/assets/logo-512.png`,
+    { '@type': 'Article', '@id': `${SITE}${artUrl(a)}#article`, headline: a.title, description: a.desc, datePublished: a.date, dateModified: a.modified || a.date, inLanguage: 'zh-HK', mainEntityOfPage: SITE + artUrl(a), image: a.photo ? ogImg(a.photo) : `${SITE}/assets/logo-512.png`,
       author: { '@type': 'Person', name: `${au.name} (${au.nameEn})`, jobTitle: au.role, worksFor: { '@id': `${SITE}/#org` } }, publisher: { '@id': `${SITE}/#org` } },
     crumbLD([['主頁', '/'], ['文章', '/articles/'], [a.title, artUrl(a)]])
   ];
   const rel = (a.related || []).map(sl => D.services.find(x => x.slug === sl)).filter(Boolean);
-  return head({ full: `${a.title}｜Praise More`, desc: a.desc, url: artUrl(a), graph, type: 'article' }) + header('articles') + `<main id="main">
+  return head({ full: `${a.title}｜Praise More`, desc: a.desc, url: artUrl(a), graph, type: 'article', image: ogImg(a.photo) }) + header('articles') + `<main id="main">
   ${hero({ eyebrow: `ARTICLE · ${a.date}`, title: [a.title], crumbs: '<a href="/">主頁</a> / <a href="/articles/">文章</a>', cta: false })}
   <section class="sec"><div class="wrap article">
     <p class="byline">${esc(au.name)}（${esc(au.nameEn)}）· ${esc(au.role)} · <time datetime="${a.date}">${esc(a.date)}</time></p>
+    ${photo(a.photo, a.photoAlt)}
     <div class="prose">${renderBody(a.body)}</div>
     ${a.sources ? `<p class="src">資料來源：${a.sources.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(t)}</a>`).join('、')}</p>` : ''}
     ${authorBox()}
