@@ -233,6 +233,7 @@ function pageService(s) {
     <h2 data-reveal>${esc(sec.h)}</h2>${sec.p ? `<p data-reveal>${esc(sec.p)}</p>` : ''}
     ${sec.items ? items(sec.items) : ''}
     ${sec.table ? table(sec.table) : ''}
+    ${sec.certs ? `<div class="certs">${sec.certs.map(c => `<figure class="cert" data-reveal>${c.img ? `<div class="cert__logo"><img src="${c.img}" alt="${esc(c.alt || c.title)}" loading="lazy"></div>` : ''}<figcaption><strong>${esc(c.title)}</strong>${c.text ? `<span>${esc(c.text)}</span>` : ''}${c.url ? `<a href="${c.url}" target="_blank" rel="noopener">${esc(c.link || '查看來源')}</a>` : ''}</figcaption></figure>`).join('')}</div>` : ''}
     ${sec.note ? `<div class="note" data-reveal>${sec.note}</div>` : ''}
     ${sec.groups ? sec.groups.map(g => `<span class="group-title">${esc(g.title)}</span>${items(g.items)}`).join('') : ''}
     ${sec.after ? `<p class="after" data-reveal>${esc(sec.after)}</p>` : ''}

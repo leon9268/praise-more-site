@@ -1370,6 +1370,50 @@
           "note": "資料來源：<a href=\"https://www3.epa.gov/pesticides/chem_search/ppls/085556-00002-20240216.pdf\" target=\"_blank\" rel=\"noopener\">美國 EPA 產品標籤（2024 年 2 月）</a>、<a href=\"https://info.nsf.org/USDA/Listings.asp?Company=C0872574\" target=\"_blank\" rel=\"noopener\">NSF 非食品化合物名錄</a>。"
         },
         {
+          "h": "研究及測試",
+          "p": "以下包括已發表的學術研究，以及供應商提供的測試資料。",
+          "certs": [
+            {
+              "img": "/assets/goldshield/ajic.webp",
+              "alt": "American Journal of Infection Control",
+              "title": "美國感染控制雜誌（AJIC）2011 年研究",
+              "text": "GoldShield 5 處理過的布料，對 MRSA、綠膿桿菌及大腸桿菌的抑制作用維持 14 日。",
+              "url": "https://doi.org/10.1016/j.ajic.2010.10.015",
+              "link": "查看研究（DOI）"
+            },
+            {
+              "title": "PLOS ONE 2017 年研究",
+              "text": "GoldShield 5 在不鏽鋼表面對金黃葡萄球菌的殺菌作用維持最多 6 日。",
+              "url": "https://doi.org/10.1371/journal.pone.0182624",
+              "link": "查看研究（DOI）"
+            },
+            {
+              "img": "/assets/goldshield/en.webp",
+              "alt": "European Norm",
+              "title": "歐洲標準測試",
+              "text": "EN 1276、EN 1650、EN 1656、EN 1657 等殺細菌及殺真菌測試（供應商提供）"
+            },
+            {
+              "img": "/assets/goldshield/sgs.webp",
+              "alt": "SGS",
+              "title": "SGS 抗菌測試",
+              "text": "供應商提供"
+            },
+            {
+              "img": "/assets/goldshield/microchem.webp",
+              "alt": "Microchem Laboratory",
+              "title": "Microchem Laboratory 測試",
+              "text": "供應商提供"
+            },
+            {
+              "img": "/assets/goldshield/ukas.webp",
+              "alt": "UKAS Testing",
+              "title": "UKAS 認可實驗室測試",
+              "text": "供應商提供"
+            }
+          ]
+        },
+        {
           "h": "塗層與一般消毒有甚麼分別？",
           "table": {
             "head": [
