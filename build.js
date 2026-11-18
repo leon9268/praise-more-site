@@ -341,7 +341,7 @@ function page404() {
 
 function pageSchools() {
   const Sc = D.schools;
-  const schoolSvcs = D.services.filter(x => x.category === 'school' || x.slug === 'campus-cleaning');
+  const schoolSvcs = D.services.filter(x => x.category === 'school' || ['campus-cleaning', 'goldshield-coating'].includes(x.slug));
   const graph = [crumbLD([['主頁', '/'], ['學校專區', '/schools/']]), faqLD(Sc.faq)];
   const opts = schoolSvcs.map(x => `<label class="chk"><input type="checkbox" name="services" value="${esc(x.name)}"><span>${esc(x.name)}</span></label>`).join('');
   return head({ full: Sc.seoTitle, desc: Sc.seoDesc, url: '/schools/', graph }) + header('schools') + `<main id="main">

@@ -228,3 +228,10 @@ PROJECT.md                 本文件
 - [ ] 搬圖片（仍連去舊網 praise.com.hk）
 - [ ] Google Search Console、Bing Webmaster Tools 提交 sitemap
 - [ ] Google 商家檔案（服務範圍商家，地址後補）
+
+## 11. 2026-11-18 GoldShield® 長效抗菌塗層
+- 新服務頁 `/services/goldshield-coating/`（健康環境服務，共 16 項服務）及文章 `/articles/antimicrobial-coating-vs-disinfection/`
+- 家居清潔、校園清潔頁加「長效抗菌塗層」段落；學校專區列出此服務
+- 聲稱只跟美國 EPA 標籤（GoldShield 75，EPA Reg. No. 85556-2，微生物抑制劑）：抑制引致異味、污漬的細菌及霉菌，最長 90 日
+- 未寫殺病毒／99.99%／新冠等聲稱：EPA 標籤無此批准，需供應商提供所用型號的獨立實驗室報告先可加入
+- 寫明 Praise More「使用 GoldShield® 產品」，並非香港授權服務供應商
