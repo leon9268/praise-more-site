@@ -290,6 +290,7 @@ section{position:relative}
 .feature-img img{display:block;width:100%;height:auto}
 .photo{position:relative}
 .photo img{aspect-ratio:1600/893;object-fit:cover}
+.photo__video{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#e8efe2}
 .photo__note{position:absolute;right:14px;bottom:12px;font-size:12px;line-height:1;padding:6px 10px;border-radius:999px;background:rgba(7,18,10,.62);color:#fff;letter-spacing:.08em}
 .photo-band{margin-top:clamp(40px,6vw,80px)}
 .photo-band .feature-img{margin-bottom:0}

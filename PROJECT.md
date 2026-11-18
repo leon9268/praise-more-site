@@ -248,5 +248,10 @@ PROJECT.md                 本文件
 ### 待辦
 - [ ] 許秀香老師（Sarah Hui）個人照：需真相，不可用 AI
 - [ ] GoldShield 產品樽身標籤相：需真相，不可用 AI
-- [ ] 兩段背景短片（首頁、GoldShield）：待 Leon 確認後先生成
+- [x] 兩段短片（2026-11-18 完成，見下）
 - [ ] 決定 AI 到校課程、智啟學教兩頁是否改用新圖（舊圖仍連去舊網）
+
+### 短片（AI 示意）
+- Flow 用 Veo 3.1 - Fast 生成 2 段 8 秒 16:9 短片（Omni 1.2 Flash 生成時出錯，未開放）
+- `static/assets/video/video-home.mp4`（首頁）、`video-coating.mp4`（GoldShield 頁），H.264 靜音 720p CRF 28，各 < 1MB，另有 `-poster.webp`
+- 放在原本配圖位置（hero 下方），WebGL 動畫不變；捲到附近先載入及播放，「減少動態」設定下只顯示首格；site.json 用 `video` 欄位

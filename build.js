@@ -60,9 +60,11 @@ const icon = (n, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="non
 const WA_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1l-.9 1.2c-.2.2-.3.2-.6.1a8.2 8.2 0 0 1-4-3.5c-.3-.5.3-.5.9-1.6.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.6.7.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.4 5 5.2-1.4A10 10 0 1 0 12 2zm0 18.3a8.3 8.3 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.3 8.3 0 1 1 12 20.3z"/></svg>';
 const ILLUS = ['goldshield-coating', 'campus-cleaning'];
 const ogImg = ph => ph ? `${SITE}/assets/photos/og/${ph}.jpg` : '';
-function photo(ph, alt, { lazy = false } = {}) {
+function photo(ph, alt, { lazy = false, video = '' } = {}) {
   if (!ph) return '';
   const src = `/assets/photos/${ph}`;
+  if (video) return `<figure class="feature-img photo" data-reveal><video class="photo__video" muted loop playsinline preload="none" poster="/assets/video/${video}-poster.webp" width="1280" height="720" aria-label="${esc(alt)}" data-src="/assets/video/${video}.mp4"></video>${ILLUS.includes(ph) ? '<figcaption class="photo__note">示意圖</figcaption>' : ''}</figure>
+<script>(()=>{const v=document.currentScript.previousElementSibling.querySelector('video');if(!v)return;const io=new IntersectionObserver(es=>{for(const e of es){if(e.isIntersecting){if(!v.src){v.src=v.dataset.src;}if(!matchMedia('(prefers-reduced-motion: reduce)').matches)v.play().catch(()=>{});}else if(v.src){v.pause();}}},{rootMargin:'200px'});io.observe(v);})();</script>`;
   return `<figure class="feature-img photo" data-reveal><picture><source type="image/webp" srcset="${src}-800.webp 800w, ${src}.webp 1600w" sizes="(max-width:820px) 100vw, 900px"><img src="${src}.webp" alt="${esc(alt)}" width="1600" height="893"${lazy ? ' loading="lazy"' : ''} decoding="async"></picture>${ILLUS.includes(ph) ? '<figcaption class="photo__note">示意圖</figcaption>' : ''}</figure>`;
 }
 const MARK ='<img src="/assets/logo-192.png" alt="" width="40" height="40">';
@@ -186,7 +188,7 @@ function pageHome() {
   <section class="sec"><div class="wrap">
     <span class="kicker">ABOUT · 關於我們</span>
     <p class="statement">${wrapWords(H.missionTitle)}</p>
-    <div class="photo-band">${photo(H.photo, H.photoAlt)}</div>
+    <div class="photo-band">${photo(H.photo, H.photoAlt, { video: H.video })}</div>
     <div class="stats">${stats}</div>
   </div></section>
   <section class="sec sec--tint" id="services"><div class="wrap">
@@ -266,7 +268,7 @@ function pageService(s) {
     <aside class="aside"><h4>${esc(c.name)}</h4><nav>${sib.map(x => `<a href="${svcUrl(x)}"${x.slug === s.slug ? ' aria-current="page"' : ''}>${esc(x.name)}</a>`).join('')}</nav>
       ${isSchool ? `<a class="btn btn--lime" href="${QUOTE}">${icon('mail')}索取報價</a>` : `<a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp 查詢</a>`}</aside>
     <article>
-      ${s.image ? `<figure class="feature-img" data-reveal><img src="${IMG}${s.image}" alt="${esc(s.photoAlt || s.name)}"></figure>` : photo(s.photo, s.photoAlt)}
+      ${s.image ? `<figure class="feature-img" data-reveal><img src="${IMG}${s.image}" alt="${esc(s.photoAlt || s.name)}"></figure>` : photo(s.photo, s.photoAlt, { video: s.video })}
       <p class="lead" data-reveal>${esc(s.summary || s.intro)}</p>
       ${s.summary ? `<p class="intro2" data-reveal>${esc(s.intro)}</p>` : ''}
       ${blocks}

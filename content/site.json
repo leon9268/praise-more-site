@@ -26,6 +26,7 @@
   },
   "home": {
     "photo": "home",
+    "video": "video-home",
     "photoAlt": "幼稚園老師陪伴兩名幼兒砌積木",
     "eyebrow": "家庭及校園專業支援配對平台",
     "heroLines": [
@@ -1272,6 +1273,7 @@
     {
       "slug": "goldshield-coating",
       "photo": "goldshield-coating",
+      "video": "video-coating",
       "photoAlt": "技術人員為空置課室書桌噴上長效抗菌塗層",
       "category": "environment",
       "icon": "shield",
