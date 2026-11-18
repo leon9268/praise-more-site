@@ -1,6 +1,6 @@
 # Praise More 新網站項目總結
 
-> 最後更新：2026-11-14
+> 最後更新：2026-11-18
 > 負責人：Leon Lai（Business Development Manager）
 > 網站擁有人：Praise More（Sarah）
 
@@ -21,7 +21,7 @@
 
 | 項目 | 內容 |
 |---|---|
-| 網址 | https://praise-more-site.pages.dev |
+| 網址 | https://www.praisemore.com.hk（pages.dev 及無 www 網址自動 301 轉到此） |
 | 原始碼 | GitHub `leon9268/praise-more-site`（branch `main`，Public） |
 | 寄存 | Cloudflare Pages（免費版），帳戶 leonlaihinhei@gmail.com |
 | 自動部署 | push 到 GitHub `main` 後約 1 分鐘自動更新 |
@@ -207,3 +207,24 @@ PROJECT.md                 本文件
 | 2026-11-10 | 研究網域（.com／.hk／.com.hk）及商用電郵方案 |
 | 2026-11-11 | 選定六角形 pm logo，更新到網站 |
 | 2026-11-14 | 撰寫本項目總結 |
+
+---
+
+## 10. 2026-11-18 SEO 改版
+
+- 正式網址 `https://www.praisemore.com.hk`（`site.url`），sitemap、robots、canonical、og:url 全部用此網址
+- `functions/_middleware.js`：`praise-more-site.pages.dev` 及 `praisemore.com.hk` 301 轉到 www
+- 每頁新 title／description（`seoTitle`、`seoDesc`；其他頁在 `pages`）
+- 結構化資料（JSON-LD）：EducationalOrganization、Service、BreadcrumbList、FAQPage、Article
+- 新頁：`/schools/`（學校專區、津貼對應表、報價表格）、`/articles/`（文章，作者 許秀香老師 Sarah Hui）
+- 6 個核心服務頁加長：適合對象、流程、導師資格、收費說明、常見問題（`summary`、`faq`）
+- 報價表格：`functions/api/quote.js` 經 Resend 寄到 info@praisemore.com.hk
+  - Cloudflare Pages → Settings → Variables and Secrets 需設定 `RESEND_API_KEY`（Secret）
+  - Resend 需驗證 praisemore.com.hk 網域（寄件人 noreply@praisemore.com.hk）
+- 聯絡：電郵 info@praisemore.com.hk、電話／WhatsApp 6620 3724
+
+### 待辦
+- [ ] Sarah 審閱兩篇文章及服務頁新文字
+- [ ] 搬圖片（仍連去舊網 praise.com.hk）
+- [ ] Google Search Console、Bing Webmaster Tools 提交 sitemap
+- [ ] Google 商家檔案（服務範圍商家，地址後補）

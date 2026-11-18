@@ -9,6 +9,24 @@ const S = D.site;
 const IMG = 'https://www.praise.com.hk/assets/images/uploads/';
 const WA = `https://api.whatsapp.com/send?phone=${S.whatsapp}&text=${encodeURIComponent(S.whatsappText)}`;
 const VER = Date.now().toString(36);
+const SITE = (S.url || 'https://www.praisemore.com.hk').replace(/\/$/, '');
+const TODAY = new Date().toISOString().slice(0, 10);
+const P = D.pages || {};
+const QUOTE = '/schools/#quote';
+const ld = o => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`;
+const ORG = {
+  '@type': 'EducationalOrganization', '@id': `${SITE}/#org`, name: 'Praise More',
+  alternateName: ['Praise', 'Praise Education Centre', 'Praise More 家庭及校園專業支援配對平台'],
+  url: `${SITE}/`, logo: `${SITE}/assets/logo-512.png`, image: `${SITE}/assets/logo-512.png`,
+  description: S.description, email: S.email, telephone: `+852-${S.phone.replace(/\s/g, '-')}`,
+  areaServed: { '@type': 'AdministrativeArea', name: 'Hong Kong' },
+  knowsLanguage: ['zh-HK', 'en'],
+  contactPoint: [{ '@type': 'ContactPoint', telephone: `+852-${S.phone.replace(/\s/g, '-')}`, email: S.email, contactType: 'customer service', areaServed: 'HK', availableLanguage: ['Cantonese', 'English', 'Mandarin'] }],
+  sameAs: [S.facebook, S.instagram]
+};
+const crumbLD = list => ({ '@type': 'BreadcrumbList', itemListElement: list.map(([name, u], i) => ({ '@type': 'ListItem', position: i + 1, name, item: SITE + u })) });
+const faqLD = faq => ({ '@type': 'FAQPage', mainEntity: faq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) });
+const faqBlock = (faq, title = '常見問題') => faq && faq.length ? `<div class="block faq"><h2 data-reveal>${esc(title)}</h2>${faq.map(f => `<details class="faq__q" data-reveal><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('')}</div>` : '';
 
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const cats = Object.fromEntries(D.categories.map(c => [c.id, c]));
@@ -42,20 +60,23 @@ const WA_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
 const MARK = '<img src="/assets/logo-192.png" alt="" width="40" height="40">';
 
 /* ---------- shell ---------- */
-function head({ title, desc, url }) {
-  const t = title ? `${title}｜Praise More` : S.title;
+function head({ title, full, desc, url, graph = [], type = 'website' }) {
+  const t = full || (title ? `${title}｜Praise More` : S.title);
+  const abs = SITE + url;
+  const g = { '@context': 'https://schema.org', '@graph': [ORG, ...graph] };
   return `<!doctype html><html lang="zh-Hant-HK"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${esc(t)}</title>
 <meta name="description" content="${esc(desc || S.description)}">
-<meta name="keywords" content="${esc(S.keywords)}">
 <meta name="theme-color" content="#07120a">
 <meta property="og:title" content="${esc(t)}"><meta property="og:description" content="${esc(desc || S.description)}">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Praise More">
-<link rel="canonical" href="${url}">
+<meta property="og:type" content="${type}"><meta property="og:site_name" content="Praise More"><meta property="og:locale" content="zh_HK">
+<meta property="og:url" content="${abs}"><meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="${abs}">
 <link rel="icon" href="/assets/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<meta property="og:image" content="https://praise-more-site.pages.dev/assets/logo-512.png">
+<meta property="og:image" content="${SITE}/assets/logo-512.png">
+${ld(g)}
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css?v=${VER}">
@@ -77,7 +98,8 @@ function header(active, light = false) {
     <a href="/"${cur('home')}>主頁</a>
     <a href="/about/"${cur('about')}>關於我們</a>
     <div class="has-mega"><button aria-expanded="false" aria-haspopup="true">服務介紹</button><div class="mega">${megaCols()}</div></div>
-    <a href="/history/"${cur('history')}>品牌歷程</a>
+    <a href="/schools/"${cur('schools')}>學校專區</a>
+    <a href="/articles/"${cur('articles')}>文章</a>
     <a href="/contact/"${cur('contact')}>聯絡我們</a>
   </nav>
   <a class="btn btn--lime btn--sm" href="${WA}" target="_blank" rel="noopener">${WA_ICON}立即查詢</a>
@@ -86,7 +108,7 @@ function header(active, light = false) {
 <div class="drawer" aria-label="流動選單">
   <a href="/">主頁</a><a href="/about/">關於我們</a>
   <details><summary>服務介紹 +</summary>${D.categories.map(c => `<h5>${esc(c.name)}</h5>${byCat(c.id).map(s => `<a href="${svcUrl(s)}">${esc(s.name)}</a>`).join('')}`).join('')}</details>
-  <a href="/history/">品牌歷程</a><a href="/contact/">聯絡我們</a>
+  <a href="/schools/">學校專區</a><a href="/articles/">文章</a><a href="/history/">品牌歷程</a><a href="/contact/">聯絡我們</a>
   <a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp ${esc(S.phone)}</a>
 </div>
 <div class="glow" aria-hidden="true"></div>`;
@@ -100,7 +122,7 @@ function footer() {
       <div class="socials"><a href="${S.facebook}" target="_blank" rel="noopener" aria-label="Facebook">${icon('fb')}</a><a href="${S.instagram}" target="_blank" rel="noopener" aria-label="Instagram">${icon('ig')}</a><a href="${WA}" target="_blank" rel="noopener" aria-label="WhatsApp">${WA_ICON}</a><a href="mailto:${S.email}" aria-label="電郵">${icon('mail')}</a></div></div>
     <div><h5>家長服務</h5>${byCat('family').map(s => `<a href="${svcUrl(s)}">${esc(s.name)}</a>`).join('')}</div>
     <div><h5>學校服務</h5>${byCat('school').map(s => `<a href="${svcUrl(s)}">${esc(s.name)}</a>`).join('')}<h5 style="margin-top:28px">健康環境服務</h5>${byCat('environment').map(s => `<a href="${svcUrl(s)}">${esc(s.name)}</a>`).join('')}</div>
-    <div><h5>聯絡我們</h5><a href="${WA}" target="_blank" rel="noopener">總部電話 / WhatsApp<br><strong style="color:#fff">${esc(S.phone)}</strong></a><a href="mailto:${S.email}">${esc(S.email)}</a><a href="/about/">關於我們</a><a href="/history/">品牌歷程</a></div>
+    <div><h5>聯絡我們</h5><a href="${WA}" target="_blank" rel="noopener">總部電話 / WhatsApp<br><strong style="color:#fff">${esc(S.phone)}</strong></a><a href="mailto:${S.email}">${esc(S.email)}</a><a href="/schools/">學校專區／報價</a><a href="/articles/">文章</a><a href="/about/">關於我們</a><a href="/history/">品牌歷程</a></div>
   </div>
   <div class="foot__big" aria-hidden="true">Praise More</div>
   <div class="foot__bar"><span>COPYRIGHT © ${new Date().getFullYear()} Praise More. All Rights Reserved.</span><span>查詢 WhatsApp ${esc(S.phone)}</span></div>
@@ -120,7 +142,7 @@ function hero({ variant = 'page', eyebrow, title, lead, crumbs, cta = true, home
     <h1>${lines.map((l, i) => `<span class="ln"><span${i === lines.length - 1 && home ? ' class="accent"' : ''}>${esc(l)}</span></span>`).join('')}</h1>
     <div class="hero__row">
       ${lead ? `<p class="hero__lead">${esc(lead)}</p>` : '<span></span>'}
-      ${cta ? `<div class="hero__cta"><a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp 查詢</a><a class="btn btn--ghost" href="/services/">瀏覽服務 ${icon('arrow')}</a></div>` : ''}
+      ${cta ? `<div class="hero__cta"><a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp 查詢</a>${home ? `<a class="btn btn--ghost" href="/schools/">學校專區 ${icon('arrow')}</a>` : `<a class="btn btn--ghost" href="/services/">瀏覽服務 ${icon('arrow')}</a>`}</div>` : ''}
     </div>
   </div>
   ${home ? '<div class="scroll-cue">SCROLL</div>' : ''}
@@ -141,7 +163,7 @@ function pageHome() {
   const H = D.home;
   const allNames = D.services.map(s => s.name);
   const marquee = `<div class="marquee" aria-hidden="true"><div class="marquee__track">${[0, 1].map(() => `<span>${allNames.map(n => `<span>${esc(n)}</span>`).join('')}</span>`).join('')}</div></div>`;
-  const stats = H.stats.map((s, i) => `<div class="stat" data-reveal data-reveal-delay="${i}"><div class="stat__v"><span class="num" data-count="${s.value}">0</span><small>${esc(s.suffix)}</small></div><div class="stat__l">${esc(s.label)}</div></div>`).join('');
+  const stats = H.stats.map((s, i) => `<div class="stat" data-reveal data-reveal-delay="${i}"><div class="stat__v"><span class="num" data-count="${s.value}">${Number(s.value).toLocaleString('en-US')}</span><small>${esc(s.suffix)}</small></div><div class="stat__l">${esc(s.label)}</div></div>`).join('');
   const bento = D.categories.map(c => `<article class="cat cat--${c.id}" data-tilt data-reveal>
     <div class="cat__orb"></div><span class="cat__tag">${esc(c.tagline)}</span><h3>${esc(c.name)}</h3>
     <ul>${byCat(c.id).map(s => `<li><a href="${svcUrl(s)}">${esc(s.name)}</a></li>`).join('')}</ul>
@@ -150,7 +172,7 @@ function pageHome() {
   const steps = D.about.process.map((s, i) => `<div class="step" style="--i:${i + 1}"><span class="step__n">0${i + 1}</span><h3>${esc(s)}</h3><div class="step__bar"></div></div>`).join('');
   const news = H.news.items.map(n => `<div class="news__row"><b>${esc(n.label)}</b><span>${esc(n.text)}</span></div>`).join('');
   const ms = D.history.milestones.map((m, i) => `<div class="ms" data-reveal data-reveal-delay="${i}"><span class="ms__tag">${esc(m.tag)}</span><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></div>`).join('');
-  return head({ url: '/' }) + header('home') + `<main id="main">
+  return head({ full: S.seoTitle, url: '/', graph: [{ '@type': 'WebSite', '@id': `${SITE}/#web`, url: `${SITE}/`, name: 'Praise More', inLanguage: 'zh-HK', publisher: { '@id': `${SITE}/#org` } }] }) + header('home') + `<main id="main">
   ${hero({ variant: 'home', eyebrow: H.eyebrow, title: H.heroLines, lead: H.intro, home: true })}
   ${marquee}
   <section class="sec"><div class="wrap">
@@ -188,7 +210,7 @@ function pageServices() {
     <div class="svc-group__head" data-reveal><h2>${esc(c.name)}</h2><span>${esc(c.tagline)}</span></div>
     <div class="svc-list">${byCat(c.id).map(s => `<a class="svc-row" href="${svcUrl(s)}" data-reveal><span class="svc-row__i">${icon(s.icon)}</span><h3>${esc(s.name)}</h3><p>${esc(s.subtitle)}</p><span class="svc-row__go">${icon('arrow')}</span></a>`).join('')}</div>
   </div>`).join('');
-  return head({ title: '服務介紹', url: '/services/' }) + header('services') + `<main id="main">
+  return head({ full: P.services?.seoTitle, desc: P.services?.seoDesc, url: '/services/', graph: [crumbLD([['主頁', '/'], ['服務介紹', '/services/']])] }) + header('services') + `<main id="main">
   ${hero({ eyebrow: 'SERVICES · 服務介紹', title: ['服務介紹'], lead: '家長服務、學校服務、健康環境服務——由家庭到校園，一站同行。', crumbs: '<a href="/">主頁</a> / 服務介紹' })}
   <section class="sec"><div class="wrap">${groups}</div></section>
   ${ctaBlock()}
@@ -219,17 +241,28 @@ function pageService(s) {
   if (s.disclaimer) notices.push('此服務屬教育訓練，並非醫療診斷或治療。');
   const others = D.services.filter(x => x.slug !== s.slug && x.category === s.category).slice(0, 3);
   const rel = (others.length ? others : D.services.filter(x => x.slug !== s.slug).slice(0, 3));
-  return head({ title: s.name, desc: `${s.name}：${s.subtitle}。${s.intro}`.slice(0, 160), url: svcUrl(s) }) + header('services') + `<main id="main">
+  const isSchool = s.category === 'school' || s.slug === 'campus-cleaning';
+  const graph = [
+    { '@type': 'Service', '@id': `${SITE}${svcUrl(s)}#service`, name: s.name, serviceType: s.name, description: s.summary || s.intro, provider: { '@id': `${SITE}/#org` }, areaServed: { '@type': 'AdministrativeArea', name: 'Hong Kong' }, audience: { '@type': 'Audience', audienceType: isSchool ? '學校' : '家長' }, url: SITE + svcUrl(s) },
+    crumbLD([['主頁', '/'], ['服務介紹', '/services/'], [s.name, svcUrl(s)]])
+  ];
+  if (s.faq?.length) graph.push(faqLD(s.faq));
+  const cta = isSchool
+    ? `<a class="btn btn--lime" href="${QUOTE}">${icon('mail')}索取報價</a>`
+    : `<a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}立即查詢</a>`;
+  return head({ title: s.name, full: s.seoTitle, desc: s.seoDesc || `${s.name}：${s.subtitle}。${s.intro}`.slice(0, 160), url: svcUrl(s), graph }) + header('services') + `<main id="main">
   ${hero({ variant: s.category, eyebrow: `${c.name} · ${c.tagline}`, title: [s.name], lead: s.subtitle, crumbs: `<a href="/">主頁</a> / <a href="/services/">服務介紹</a> / ${esc(s.name)}`, cta: false })}
   <section class="sec"><div class="wrap detail">
     <aside class="aside"><h4>${esc(c.name)}</h4><nav>${sib.map(x => `<a href="${svcUrl(x)}"${x.slug === s.slug ? ' aria-current="page"' : ''}>${esc(x.name)}</a>`).join('')}</nav>
-      <a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp 查詢</a></aside>
+      ${isSchool ? `<a class="btn btn--lime" href="${QUOTE}">${icon('mail')}索取報價</a>` : `<a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp 查詢</a>`}</aside>
     <article>
       ${s.image ? `<figure class="feature-img" data-reveal><img src="${IMG}${s.image}" alt="${esc(s.name)}" loading="lazy"></figure>` : ''}
-      <p class="lead" data-reveal>${esc(s.intro)}</p>
+      <p class="lead" data-reveal>${esc(s.summary || s.intro)}</p>
+      ${s.summary ? `<p class="intro2" data-reveal>${esc(s.intro)}</p>` : ''}
       ${blocks}
+      ${faqBlock(s.faq)}
       ${notices.map(n => `<div class="notice" data-reveal>${icon('info')}<div><h3>重要聲明</h3><p>${esc(n)}</p></div></div>`).join('')}
-      <div class="enquiry" data-reveal><div><h3>查詢「${esc(s.name)}」</h3><p>WhatsApp ${esc(S.phone)}</p></div><a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}立即查詢</a></div>
+      <div class="enquiry" data-reveal><div><h3>${isSchool ? '索取' : '查詢'}「${esc(s.name)}」${isSchool ? '報價' : ''}</h3><p>${isSchool ? `電郵 ${esc(S.email)}｜` : ''}WhatsApp ${esc(S.phone)}｜${esc(S.replyPromise || '')}</p></div>${cta}</div>
     </article>
   </div></section>
   <section class="sec sec--tint" style="padding-top:90px;padding-bottom:110px"><div class="wrap">
@@ -241,7 +274,7 @@ function pageService(s) {
 
 function pageAbout() {
   const A = D.about;
-  return head({ title: '關於我們', url: '/about/' }) + header('about') + `<main id="main">
+  return head({ full: P.about?.seoTitle, desc: P.about?.seoDesc, url: '/about/', graph: [crumbLD([['主頁', '/'], ['關於我們', '/about/']])] }) + header('about') + `<main id="main">
   ${hero({ variant: 'about', eyebrow: 'ABOUT · 關於我們', title: ['關於我們'], lead: A.intro, crumbs: '<a href="/">主頁</a> / 關於我們' })}
   <section class="sec"><div class="wrap split">
     <div><span class="kicker">OUR MISSION · 我們的使命</span><p class="statement" style="font-size:clamp(26px,3vw,44px)">${wrapWords(A.mission)}</p></div>
@@ -263,8 +296,8 @@ function pageHistory() {
   const Hs = D.history;
   const ms = Hs.milestones.map((m, i) => `<div class="ms" data-reveal data-reveal-delay="${i}"><span class="ms__tag">${esc(m.tag)}</span><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></div>`).join('');
   const press = Hs.media.map((id, i) => `<a href="${IMG}media_interview/${id}.jpg" target="_blank" rel="noopener" aria-label="傳媒訪問 ${i + 1}"><img src="${IMG}media_interview/${id}.jpg" alt="傳媒訪問剪報 ${i + 1}" loading="lazy"></a>`).join('');
-  return head({ title: '品牌歷程', url: '/history/' }) + header('history') + `<main id="main">
-  ${hero({ variant: 'page', eyebrow: 'OUR STORY · 品牌歷程', title: ['十八年', '陪伴成長'], lead: Hs.lead, crumbs: '<a href="/">主頁</a> / 品牌歷程', cta: false })}
+  return head({ full: P.history?.seoTitle, desc: P.history?.seoDesc, url: '/history/', graph: [crumbLD([['主頁', '/'], ['品牌歷程', '/history/']])] }) + header('history') + `<main id="main">
+  ${hero({ variant: 'page', eyebrow: 'OUR STORY · 品牌歷程', title: P.history?.h1 || ['十八年', '陪伴成長'], lead: Hs.lead, crumbs: '<a href="/">主頁</a> / 品牌歷程', cta: false })}
   <section class="sec sec--dark"><div class="wrap">
     <span class="kicker">MILESTONES</span>
     <div class="timeline">${ms}</div>
@@ -282,7 +315,7 @@ function pageHistory() {
 }
 
 function pageContact() {
-  return head({ title: '聯絡我們', url: '/contact/' }) + header('contact') + `<main id="main">
+  return head({ full: P.contact?.seoTitle, desc: P.contact?.seoDesc, url: '/contact/', graph: [crumbLD([['主頁', '/'], ['聯絡我們', '/contact/']])] }) + header('contact') + `<main id="main">
   ${hero({ variant: 'page', eyebrow: 'CONTACT · 聯絡我們', title: ['聯絡我們'], lead: '一個 WhatsApp 搞掂，快速取得專業建議。', crumbs: '<a href="/">主頁</a> / 聯絡我們', cta: false })}
   <section class="sec"><div class="wrap">
     <div class="contact-grid">
@@ -292,6 +325,7 @@ function pageContact() {
     </div>
     <div class="related" style="margin-top:20px">
       <a class="rel" href="${S.facebook}" target="_blank" rel="noopener" data-reveal><small>Facebook</small><h3>Praise Education Centre</h3><span>更多資訊，可到 Facebook 專頁瀏覽</span></a>
+      <a class="rel" href="/schools/#quote" data-reveal><small>學校</small><h3>學校報價表格</h3><span>${esc(S.replyPromise || '')}</span></a>
       <a class="rel" href="${S.instagram}" target="_blank" rel="noopener" data-reveal data-reveal-delay="1"><small>Instagram</small><h3>@praise.playgroup.preschool</h3><span>追蹤我們的最新動態</span></a>
       <a class="rel" href="/services/" data-reveal data-reveal-delay="2"><small>服務介紹</small><h3>瀏覽全部 ${D.services.length} 項服務</h3><span>家長服務、學校服務、健康環境服務</span></a>
     </div>
@@ -302,6 +336,114 @@ function pageContact() {
 
 function page404() {
   return head({ title: '找不到頁面', url: '/404' }) + header('') + `<main id="main" class="lost"><div><h1>404</h1><p style="opacity:.7;margin:10px 0 30px">找不到此頁面</p><a class="btn btn--lime" href="/">返回主頁</a></div></main>` + footer();
+}
+
+function pageSchools() {
+  const Sc = D.schools;
+  const schoolSvcs = D.services.filter(x => x.category === 'school' || x.slug === 'campus-cleaning');
+  const graph = [crumbLD([['主頁', '/'], ['學校專區', '/schools/']]), faqLD(Sc.faq)];
+  const opts = schoolSvcs.map(x => `<label class="chk"><input type="checkbox" name="services" value="${esc(x.name)}"><span>${esc(x.name)}</span></label>`).join('');
+  return head({ full: Sc.seoTitle, desc: Sc.seoDesc, url: '/schools/', graph }) + header('schools') + `<main id="main">
+  ${hero({ variant: 'school', eyebrow: 'FOR SCHOOLS · 學校專區', title: ['學校服務專區'], lead: Sc.lead, crumbs: '<a href="/">主頁</a> / 學校專區', cta: false })}
+  <section class="sec"><div class="wrap">
+    <div class="sec-head"><div><span class="kicker">SERVICES · 學校服務</span><h2 data-reveal>為學校而設的服務</h2></div><p data-reveal>按學校類別、學生程度及時間表度身安排，並提供服務報告，方便學校申報津貼。</p></div>
+    <div class="related">${schoolSvcs.map(x => `<a class="rel" href="${svcUrl(x)}" data-reveal><small>${esc(cats[x.category].name)}</small><h3>${esc(x.name)}</h3><span>${esc(x.subtitle)}</span></a>`).join('')}</div>
+  </div></section>
+  <section class="sec sec--tint"><div class="wrap">
+    <div class="sec-head"><div><span class="kicker">FUNDING · 津貼運用</span><h2 data-reveal>可配合的教育局津貼</h2></div><p data-reveal>${esc(Sc.funding.note)}</p></div>
+    <div class="tbl--wrap-all">${table({ head: Sc.funding.head, rows: Sc.funding.rows })}</div>
+    <p class="src" data-reveal>資料來源：${Sc.funding.sources.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(t)}</a>`).join('、')}</p>
+  </div></section>
+  <section class="sec sec--dark"><div class="wrap">
+    <div class="sec-head"><div><span class="kicker">ASSURANCE · 合規保障</span><h2 data-reveal>學校的保障</h2></div><p data-reveal>${esc(S.tutorCheck || '')}。</p></div>
+    <div class="pillars">${Sc.assurance.map(([t, x], i) => `<div class="pillar" data-reveal data-reveal-delay="${i}"><span class="pillar__n">0${i + 1}</span><h3>${esc(t)}</h3><p>${esc(x)}</p></div>`).join('')}</div>
+  </div></section>
+  <section class="sec" id="quote"><div class="wrap quote">
+    <div><span class="kicker">QUOTATION · 索取報價</span><h2 class="h2" data-reveal>學校報價表格</h2><p style="margin-top:18px;color:var(--muted)" data-reveal>填寫以下資料，我們會在${esc(S.replyPromise || '一個工作天內回覆')}。亦可直接電郵 <a href="mailto:${S.email}">${esc(S.email)}</a> 或 WhatsApp ${esc(S.phone)}。</p></div>
+    <form class="qform" id="quote-form" action="/api/quote" method="post" novalidate>
+      <div class="qgrid">
+        <label>學校名稱 *<input name="school" required maxlength="120" autocomplete="organization"></label>
+        <label>學校類別 *<select name="schoolType" required><option value="">請選擇</option><option>幼稚園</option><option>小學</option><option>中學</option><option>特殊學校</option><option>其他</option></select></label>
+        <label>聯絡人姓名及職位 *<input name="name" required maxlength="80" autocomplete="name"></label>
+        <label>聯絡電話 *<input name="phone" required maxlength="30" inputmode="tel" autocomplete="tel"></label>
+        <label class="full">電郵 *<input name="email" type="email" required maxlength="120" autocomplete="email"></label>
+      </div>
+      <fieldset><legend>查詢服務（可選多項）</legend><div class="chks">${opts}</div></fieldset>
+      <div class="qgrid">
+        <label>預計學生人數<input name="students" maxlength="40"></label>
+        <label>上課日子／時段<input name="schedule" maxlength="80"></label>
+        <label class="full">其他要求<textarea name="message" rows="4" maxlength="2000"></textarea></label>
+      </div>
+      <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+      <input type="hidden" name="t" value="">
+      <button class="btn btn--lime" type="submit">${icon('mail')}提交報價查詢</button>
+      <p class="qmsg" role="status" aria-live="polite"></p>
+    </form>
+  </div></section>
+  <section class="sec sec--tint"><div class="wrap" style="max-width:900px">${faqBlock(Sc.faq)}</div></section>
+  ${ctaBlock()}
+</main>
+<script>
+(() => {
+  const f = document.getElementById('quote-form'); if (!f) return;
+  f.t.value = Date.now();
+  const msg = f.querySelector('.qmsg'), btn = f.querySelector('button');
+  f.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!f.checkValidity()) { f.reportValidity(); return; }
+    btn.disabled = true; msg.textContent = '提交中…'; msg.className = 'qmsg';
+    const data = Object.fromEntries(new FormData(f)); data.services = [...f.querySelectorAll('[name=services]:checked')].map(x => x.value);
+    try {
+      const r = await fetch('/api/quote', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.ok) throw new Error(j.error || 'error');
+      f.reset(); msg.textContent = '已收到你的查詢，我們會在${esc(S.replyPromise || '一個工作天內回覆')}。'; msg.className = 'qmsg ok';
+      if (window.gtag) gtag('event', 'generate_lead', { form: 'school_quote' });
+    } catch (err) {
+      msg.innerHTML = '提交未成功，請直接電郵 <a href="mailto:${S.email}">${S.email}</a> 或 WhatsApp ${S.phone}。'; msg.className = 'qmsg err';
+    } finally { btn.disabled = false; }
+  });
+})();
+</script>` + footer();
+}
+
+const A = D.articles || [];
+const artUrl = a => `/articles/${a.slug}/`;
+function renderBody(body) {
+  const link = t => esc(t);
+  return body.map(([k, v]) => k === 'p' ? `<p>${link(v)}</p>` : k === 'h2' ? `<h2>${esc(v)}</h2>` : k === 'ul' ? `<ul>${v.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : k === 'ol' ? `<ol>${v.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : '').join('');
+}
+function authorBox() {
+  const au = S.author;
+  return au ? `<div class="author" data-reveal><span class="author__i">${esc(au.name.slice(0, 1))}</span><div><strong>${esc(au.name)}（${esc(au.nameEn)}）</strong><p>${esc(au.bio)}</p></div></div>` : '';
+}
+function pageArticles() {
+  const graph = [crumbLD([['主頁', '/'], ['文章', '/articles/']]), { '@type': 'CollectionPage', name: '文章｜Praise More', url: `${SITE}/articles/`, hasPart: A.map(a => ({ '@type': 'Article', headline: a.title, url: SITE + artUrl(a) })) }];
+  return head({ full: '家長及學校實用文章｜影子老師、SEN、AI 教育｜Praise More', desc: '由 Praise More 團隊撰寫：影子老師、SEN 支援、專注力訓練、學校津貼及 AI 教育的實用指南。', url: '/articles/', graph }) + header('articles') + `<main id="main">
+  ${hero({ eyebrow: 'ARTICLES · 文章', title: ['實用文章'], lead: '給家長及學校的實用指南：影子老師、SEN 支援、學校津貼及 AI 教育。', crumbs: '<a href="/">主頁</a> / 文章', cta: false })}
+  <section class="sec"><div class="wrap"><div class="related">${A.map(a => `<a class="rel" href="${artUrl(a)}" data-reveal><small>${esc(a.date)}</small><h3>${esc(a.title)}</h3><span>${esc(a.desc)}</span></a>`).join('')}</div></div></section>
+  ${ctaBlock()}
+</main>` + footer();
+}
+function pageArticle(a) {
+  const au = S.author || {};
+  const graph = [
+    { '@type': 'Article', '@id': `${SITE}${artUrl(a)}#article`, headline: a.title, description: a.desc, datePublished: a.date, dateModified: a.modified || a.date, inLanguage: 'zh-HK', mainEntityOfPage: SITE + artUrl(a), image: `${SITE}/assets/logo-512.png`,
+      author: { '@type': 'Person', name: `${au.name} (${au.nameEn})`, jobTitle: au.role, worksFor: { '@id': `${SITE}/#org` } }, publisher: { '@id': `${SITE}/#org` } },
+    crumbLD([['主頁', '/'], ['文章', '/articles/'], [a.title, artUrl(a)]])
+  ];
+  const rel = (a.related || []).map(sl => D.services.find(x => x.slug === sl)).filter(Boolean);
+  return head({ full: `${a.title}｜Praise More`, desc: a.desc, url: artUrl(a), graph, type: 'article' }) + header('articles') + `<main id="main">
+  ${hero({ eyebrow: `ARTICLE · ${a.date}`, title: [a.title], crumbs: '<a href="/">主頁</a> / <a href="/articles/">文章</a>', cta: false })}
+  <section class="sec"><div class="wrap article">
+    <p class="byline">${esc(au.name)}（${esc(au.nameEn)}）· ${esc(au.role)} · <time datetime="${a.date}">${esc(a.date)}</time></p>
+    <div class="prose">${renderBody(a.body)}</div>
+    ${a.sources ? `<p class="src">資料來源：${a.sources.map(([t, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(t)}</a>`).join('、')}</p>` : ''}
+    ${authorBox()}
+    ${rel.length ? `<div class="related" style="margin-top:40px">${rel.map(x => `<a class="rel" href="${svcUrl(x)}"><small>相關服務</small><h3>${esc(x.name)}</h3><span>${esc(x.subtitle)}</span></a>`).join('')}</div>` : ''}
+  </div></section>
+  ${ctaBlock()}
+</main>` + footer();
 }
 
 /* ---------- write ---------- */
@@ -318,6 +460,9 @@ D.services.forEach(s => write(`services/${s.slug}/index.html`, pageService(s)));
 write('about/index.html', pageAbout());
 write('history/index.html', pageHistory());
 write('contact/index.html', pageContact());
+write('schools/index.html', pageSchools());
+write('articles/index.html', pageArticles());
+A.forEach(a => write(`articles/${a.slug}/index.html`, pageArticle(a)));
 write('404.html', page404());
 
 // Old praise.com.hk URLs → new pages (useful once the domain points here)
@@ -329,7 +474,7 @@ const redirects = [
   ...D.services.map(s => `/${enc('課程介紹')}/${enc(oldName[s.slug] || s.name)} ${svcUrl(s)} 301`)
 ];
 write('_redirects', redirects.join('\n') + '\n');
-const urls = ['/', '/about/', '/services/', '/history/', '/contact/', ...D.services.map(svcUrl)];
-write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(u => `<url><loc>https://www.praise.com.hk${u}</loc></url>`).join('')}</urlset>\n`);
-write('robots.txt', 'User-agent: *\nAllow: /\nSitemap: https://www.praise.com.hk/sitemap.xml\n');
+const urls = ['/', '/about/', '/services/', '/schools/', '/articles/', '/history/', '/contact/', ...D.services.map(svcUrl), ...A.map(artUrl)];
+write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(u => `<url><loc>${SITE}${u}</loc><lastmod>${TODAY}</lastmod></url>`).join('')}</urlset>\n`);
+write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);
 console.log(`Built ${urls.length + 1} pages → dist/`);
