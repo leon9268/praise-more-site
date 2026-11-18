@@ -1367,7 +1367,7 @@
               ]
             ]
           },
-          "note": "資料來源：<a href=\"https://www3.epa.gov/pesticides/chem_search/ppls/085556-00002-20240216.pdf\" target=\"_blank\" rel=\"noopener\">美國 EPA 產品標籤（2024 年 2 月）</a>、<a href=\"https://info.nsf.org/USDA/Listings.asp?Company=C0872574\" target=\"_blank\" rel=\"noopener\">NSF 非食品化合物名錄</a>。Praise More 使用 GoldShield® 產品提供施工服務，並非 GoldShield® 香港授權服務供應商。"
+          "note": "資料來源：<a href=\"https://www3.epa.gov/pesticides/chem_search/ppls/085556-00002-20240216.pdf\" target=\"_blank\" rel=\"noopener\">美國 EPA 產品標籤（2024 年 2 月）</a>、<a href=\"https://info.nsf.org/USDA/Listings.asp?Company=C0872574\" target=\"_blank\" rel=\"noopener\">NSF 非食品化合物名錄</a>。"
         },
         {
           "h": "塗層與一般消毒有甚麼分別？",
@@ -1414,10 +1414,6 @@
         {
           "q": "施工後還可以照常清潔嗎？",
           "a": "可以照常清潔。如使用清潔劑，建議之後用清水過一次並抹乾，以保持塗層效果。"
-        },
-        {
-          "q": "Praise More 是 GoldShield® 的授權代理嗎？",
-          "a": "不是。Praise More 使用 GoldShield® 產品提供施工服務。"
         },
         {
           "q": "學校可以索取報價嗎？",
