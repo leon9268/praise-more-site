@@ -22,7 +22,8 @@ const ORG = {
   areaServed: { '@type': 'AdministrativeArea', name: 'Hong Kong' },
   knowsLanguage: ['zh-HK', 'en'],
   contactPoint: [{ '@type': 'ContactPoint', telephone: `+852-${S.phone.replace(/\s/g, '-')}`, email: S.email, contactType: 'customer service', areaServed: 'HK', availableLanguage: ['Cantonese', 'English', 'Mandarin'] }],
-  sameAs: [S.facebook, S.instagram]
+  sameAs: [S.facebook, S.instagram],
+  ...(S.author ? { founder: { '@type': 'Person', name: `${S.author.name} (${S.author.nameEn})`, jobTitle: S.author.role } } : {})
 };
 const crumbLD = list => ({ '@type': 'BreadcrumbList', itemListElement: list.map(([name, u], i) => ({ '@type': 'ListItem', position: i + 1, name, item: SITE + u })) });
 const faqLD = faq => ({ '@type': 'FAQPage', mainEntity: faq.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) });
