@@ -50,6 +50,7 @@ const ICONS = {
   network: '<circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M12 7.5v4M10.3 13 6.6 16M13.7 13l3.7 3"/><circle cx="12" cy="12.5" r="1.2"/>',
   leaf: '<path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15"/><path d="M5 19c3-4 6-6.5 10-8.5"/>',
   shield: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
@@ -152,7 +153,7 @@ function hero({ variant = 'page', eyebrow, title, lead, crumbs, cta = true, home
     <h1>${lines.map((l, i) => `<span class="ln"><span${i === lines.length - 1 && home ? ' class="accent"' : ''}>${esc(l)}</span></span>`).join('')}</h1>
     <div class="hero__row">
       ${lead ? `<p class="hero__lead">${esc(lead)}</p>` : '<span></span>'}
-      ${cta ? `<div class="hero__cta"><a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp 查詢</a>${home ? `<a class="btn btn--ghost" href="/schools/">學校專區 ${icon('arrow')}</a>` : `<a class="btn btn--ghost" href="/services/">瀏覽服務 ${icon('arrow')}</a>`}</div>` : ''}
+      ${cta ? (home ? `<div class="hero__ctabox"><div class="hero__cta"><a class="btn btn--lime" href="/schools/">${icon('school')}學校專區</a><a class="btn btn--ghost" href="/services/#family">${icon('people')}家長服務</a></div><p class="hero__note">學校：AI 課程・到校支援・遊學團・校園抗菌<br>家長：導師配對・SEN 支援・上門服務<br>急需查詢或報價？<a href="${WA}" target="_blank" rel="noopener">WhatsApp ${esc(S.phone)}</a>｜<a href="mailto:${S.email}">${esc(S.email)}</a></p></div>` : `<div class="hero__cta"><a class="btn btn--lime" href="${WA}" target="_blank" rel="noopener">${WA_ICON}WhatsApp 查詢</a><a class="btn btn--ghost" href="/services/">瀏覽服務 ${icon('arrow')}</a></div>`) : ''}
     </div>
   </div>
   ${home ? '<div class="scroll-cue">SCROLL</div>' : ''}
@@ -179,7 +180,7 @@ function pageHome() {
     <ul>${byCat(c.id).map(s => `<li><a href="${svcUrl(s)}">${esc(s.name)}</a></li>`).join('')}</ul>
     <a class="cat__go" href="/services/#${c.id}" aria-label="查看${esc(c.name)}">${icon('arrow')}</a></article>`).join('');
   const pillars = H.pillars.map((p, i) => `<div class="pillar" data-reveal data-reveal-delay="${i}"><span class="pillar__n">0${i + 1}</span><h3>${esc(p.title)}</h3><p>${esc(p.text)}</p></div>`).join('');
-  const steps = D.about.process.map((s, i) => `<div class="step" style="--i:${i + 1}"><span class="step__n">0${i + 1}</span><h3>${esc(s)}</h3><div class="step__bar"></div></div>`).join('');
+  const steps = D.about.process.map((s, i) => `<div class="step" style="--i:${i + 1}"><span class="step__n">0${i + 1}</span><h3>${esc(s.t)}</h3><p class="step__d"><b>學校</b>${esc(s.school)}<br><b>家長</b>${esc(s.parent)}</p><div class="step__bar"></div></div>`).join('');
   const news = H.news.items.map(n => `<div class="news__row"><b>${esc(n.label)}</b><span>${esc(n.text)}</span></div>`).join('');
   const ms = D.history.milestones.map((m, i) => `<div class="ms" data-reveal data-reveal-delay="${i}"><span class="ms__tag">${esc(m.tag)}</span><h3>${esc(m.title)}</h3><p>${esc(m.text)}</p></div>`).join('');
   return head({ full: S.seoTitle, url: '/', image: ogImg(H.photo), graph: [{ '@type': 'WebSite', '@id': `${SITE}/#web`, url: `${SITE}/`, name: 'Praise More', inLanguage: 'zh-HK', publisher: { '@id': `${SITE}/#org` } }] }) + header('home') + `<main id="main">
@@ -200,7 +201,7 @@ function pageHome() {
     <div class="pillars">${pillars}</div>
   </div></section>
   <section class="process sec--tint"><div class="process__pin">
-    <div class="process__head"><div><span class="kicker">HOW IT WORKS · 專業配對流程</span><h2 class="h2">五步，配對最合適的導師</h2></div><span class="process__prog num">01 / 05</span></div>
+    <div class="process__head"><div><span class="kicker">HOW IT WORKS · 專業配對流程</span><h2 class="h2">五步，由諮詢到持續跟進</h2></div><span class="process__prog num">01 / 05</span></div>
     <div class="process__track">${steps}</div>
   </div></section>
   <section class="sec"><div class="wrap news">
@@ -294,7 +295,7 @@ function pageAbout() {
   </div><div class="wrap photo-band">${photo(A.photo, A.photoAlt)}</div></section>
   <section class="sec sec--dark"><div class="wrap">
     <div class="sec-head"><div><span class="kicker">HOW IT WORKS</span><h2 data-reveal>專業配對流程</h2></div><p data-reveal data-reveal-delay="1">${esc(A.intro)}</p></div>
-    <ol class="flow">${A.process.map((p, i) => `<li data-reveal data-reveal-delay="${i % 4}"><span>${esc(p)}</span></li>`).join('')}</ol>
+    <ol class="flow">${A.process.map((p, i) => `<li data-reveal data-reveal-delay="${i % 4}"><span>${esc(p.t)}</span><small class="flow__d"><b>學校</b>${esc(p.school)}<br><b>家長</b>${esc(p.parent)}</small></li>`).join('')}</ol>
   </div></section>
   <section class="sec sec--tint"><div class="wrap">
     <div class="sec-head"><div><span class="kicker">WHY PRAISE MORE</span><h2 data-reveal>我們的承諾</h2></div><p>${esc(D.home.intro)}</p></div>
@@ -480,12 +481,16 @@ A.forEach(a => write(`articles/${a.slug}/index.html`, pageArticle(a)));
 write('404.html', page404());
 
 // Old praise.com.hk URLs → new pages (useful once the domain points here)
-const oldName = { 'home-cleaning': '家居清潔及消毒', 'campus-cleaning': '校園清潔及消毒', 'sen-support': 'SEN專業支援', 'sen-classes': 'SEN興趣班', 'ai-school-courses': 'AI到校課程', 'smart-learning-plan': '智啟學教計劃' };
+const oldName = { 'home-classes': '上門興趣班', 'home-cleaning': '家居清潔及消毒', 'campus-cleaning': '校園清潔及消毒', 'sen-support': 'SEN專業支援', 'sen-classes': 'SEN興趣班', 'ai-school-courses': 'AI到校課程', 'smart-learning-plan': '智啟學教計劃' };
 const enc = s => encodeURIComponent(s);
 const redirects = [
   `/${enc('關於我們')} /about/ 301`, `/${enc('聯絡我們')} /contact/ 301`, `/${enc('課程介紹')} /services/ 301`,
   `/${enc('分校網絡')} /history/ 301`, `/${enc('傳媒訪問')} /history/ 301`, `/${enc('活動相簿')} /history/ 301`, `/${enc('活動相簿')}/* /history/ 301`,
-  ...D.services.map(s => `/${enc('課程介紹')}/${enc(oldName[s.slug] || s.name)} ${svcUrl(s)} 301`)
+  ...D.services.map(s => `/${enc('課程介紹')}/${enc(oldName[s.slug] || s.name)} ${svcUrl(s)} 301`),
+  // Services removed Nov 2026
+  `/${enc('課程介紹')}/${enc('網上興趣班')} /services/ 301`, `/${enc('課程介紹')}/${enc('外傭聘請配對')} /services/ 301`,
+  '/services/online-classes/ /services/ 301', '/services/online-classes /services/ 301',
+  '/services/domestic-helper-matching/ /services/ 301', '/services/domestic-helper-matching /services/ 301'
 ];
 write('_redirects', redirects.join('\n') + '\n');
 const urls = ['/', '/about/', '/services/', '/schools/', '/articles/', '/history/', '/contact/', ...D.services.map(svcUrl), ...A.map(artUrl)];

@@ -455,3 +455,13 @@ section{position:relative}
 .cert strong{font-size:16px;font-weight:900}
 .cert span{color:var(--muted);font-size:14.5px}
 .cert a{color:var(--green);font-size:14px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+/* Home hero: school / parent entry buttons (Nov 2026) */
+.hero__ctabox{display:flex;flex-direction:column;gap:14px;max-width:440px}
+.hero__cta .btn svg{width:18px;height:18px}
+.hero__note{font-size:13px;line-height:1.7;opacity:0;animation:fade 1s .9s var(--ease) forwards;color:rgba(255,255,255,.72)}
+.hero__note a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.hero__note a:hover{color:var(--lime)}
+.step__d{font-size:14px;line-height:1.65;opacity:.78;margin-top:14px}
+.step__d b,.flow__d b{display:inline-block;margin-right:8px;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--lime);color:#07120a}
+.flow__d{display:block;margin-top:10px;font-size:13px;line-height:1.7;opacity:.75}
+@media (max-width:560px){.hero__ctabox{max-width:none;width:100%}}
