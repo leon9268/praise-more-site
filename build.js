@@ -129,10 +129,10 @@ function footer() {
   return `<footer class="foot"><div class="wrap">
   <div class="foot__grid">
     <div><a class="brand" href="/"><span class="brand__mark">${MARK}</span><span>Praise <b>More</b></span></a>
-      <p style="margin-top:18px;max-width:320px">${esc(S.title.split('｜')[1])}。Praise 深耕香港幼兒教育 18 年，服務超過三萬個家庭。</p>
+      <p style="margin-top:18px;max-width:320px">${esc(S.title.split('｜')[1])}。Praise 深耕香港教育 18 年，服務超過三萬個家庭。</p>
       <div class="socials"><a href="${S.facebook}" target="_blank" rel="noopener" aria-label="Facebook">${icon('fb')}</a><a href="${S.instagram}" target="_blank" rel="noopener" aria-label="Instagram">${icon('ig')}</a><a href="${WA}" target="_blank" rel="noopener" aria-label="WhatsApp">${WA_ICON}</a><a href="mailto:${S.email}" aria-label="電郵">${icon('mail')}</a></div></div>
+    <div><h5>學校服務</h5>${byCat('school').map(s => `<a href="${svcUrl(s)}">${esc(s.name)}</a>`).join('')}</div>
     <div><h5>家長服務</h5>${byCat('family').map(s => `<a href="${svcUrl(s)}">${esc(s.name)}</a>`).join('')}</div>
-    <div><h5>學校服務</h5>${byCat('school').map(s => `<a href="${svcUrl(s)}">${esc(s.name)}</a>`).join('')}<h5 style="margin-top:28px">健康環境服務</h5>${byCat('environment').map(s => `<a href="${svcUrl(s)}">${esc(s.name)}</a>`).join('')}</div>
     <div><h5>聯絡我們</h5><a href="${WA}" target="_blank" rel="noopener">總部電話 / WhatsApp<br><strong style="color:#fff">${esc(S.phone)}</strong></a><a href="mailto:${S.email}">${esc(S.email)}</a><a href="/schools/">學校專區／報價</a><a href="/articles/">文章</a><a href="/about/">關於我們</a><a href="/history/">品牌歷程</a></div>
   </div>
   <div class="foot__big" aria-hidden="true">Praise More</div>
@@ -193,7 +193,7 @@ function pageHome() {
     <div class="stats">${stats}</div>
   </div></section>
   <section class="sec sec--tint" id="services"><div class="wrap">
-    <div class="sec-head"><div><span class="kicker">SERVICES · 服務介紹</span><h2 data-reveal>由家庭到校園<br>一站同行</h2></div><p data-reveal data-reveal-delay="1">${esc(H.news.items.map(n => n.label).join('、'))}——三大範疇、${D.services.length} 項服務，按孩子的需要精準配對。</p></div>
+    <div class="sec-head"><div><span class="kicker">SERVICES · 服務介紹</span><h2 data-reveal>由校園到家庭<br>一站同行</h2></div><p data-reveal data-reveal-delay="1">學校及家長兩大範疇、${D.services.length} 項服務，按需要精準配對。</p></div>
     <div class="bento">${bento}</div>
   </div></section>
   <section class="sec sec--dark"><div class="wrap">
@@ -223,7 +223,7 @@ function pageServices() {
     <div class="svc-list">${byCat(c.id).map(s => `<a class="svc-row" href="${svcUrl(s)}" data-reveal><span class="svc-row__i">${icon(s.icon)}</span><h3>${esc(s.name)}</h3><p>${esc(s.subtitle)}</p><span class="svc-row__go">${icon('arrow')}</span></a>`).join('')}</div>
   </div>`).join('');
   return head({ full: P.services?.seoTitle, desc: P.services?.seoDesc, url: '/services/', graph: [crumbLD([['主頁', '/'], ['服務介紹', '/services/']])] }) + header('services') + `<main id="main">
-  ${hero({ eyebrow: 'SERVICES · 服務介紹', title: ['服務介紹'], lead: '家長服務、學校服務、健康環境服務——由家庭到校園，一站同行。', crumbs: '<a href="/">主頁</a> / 服務介紹' })}
+  ${hero({ eyebrow: 'SERVICES · 服務介紹', title: ['服務介紹'], lead: '學校服務、家長服務——由校園到家庭，一站同行。', crumbs: '<a href="/">主頁</a> / 服務介紹' })}
   <section class="sec"><div class="wrap">${groups}</div></section>
   ${ctaBlock()}
 </main>` + footer();
@@ -340,7 +340,7 @@ function pageContact() {
       <a class="rel" href="${S.facebook}" target="_blank" rel="noopener" data-reveal><small>Facebook</small><h3>Praise Education Centre</h3><span>更多資訊，可到 Facebook 專頁瀏覽</span></a>
       <a class="rel" href="/schools/#quote" data-reveal><small>學校</small><h3>學校報價表格</h3><span>${esc(S.replyPromise || '')}</span></a>
       <a class="rel" href="${S.instagram}" target="_blank" rel="noopener" data-reveal data-reveal-delay="1"><small>Instagram</small><h3>@praise.playgroup.preschool</h3><span>追蹤我們的最新動態</span></a>
-      <a class="rel" href="/services/" data-reveal data-reveal-delay="2"><small>服務介紹</small><h3>瀏覽全部 ${D.services.length} 項服務</h3><span>家長服務、學校服務、健康環境服務</span></a>
+      <a class="rel" href="/services/" data-reveal data-reveal-delay="2"><small>服務介紹</small><h3>瀏覽全部 ${D.services.length} 項服務</h3><span>學校服務、家長服務</span></a>
     </div>
   </div></section>
   ${ctaBlock()}

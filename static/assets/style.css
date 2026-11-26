@@ -147,25 +147,25 @@ section{position:relative}
 .stat__l{margin-top:12px;color:var(--muted);font-weight:500}
 
 /* Category bento */
-.bento{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto auto;gap:20px}
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .cat{position:relative;border-radius:var(--radius);padding:clamp(28px,3vw,44px);min-height:360px;overflow:hidden;display:flex;flex-direction:column;isolation:isolate;transform-style:preserve-3d;transition:transform .5s var(--ease),box-shadow .5s;border:1px solid var(--line-dark)}
 .cat:hover{box-shadow:0 40px 80px -30px rgba(140,198,63,.4)}
-.cat--family,.cat--school{color:#fff}
-.cat--family{grid-row:span 2;background:linear-gradient(160deg,#1a3a12 0%,#0b1d0c 70%);min-height:740px}
-.cat--school{background:linear-gradient(160deg,#2c5a14 0%,#132b0b 100%)}
-.cat--environment{background:linear-gradient(160deg,#8CC63F 0%,#4F9A1C 100%);color:var(--night);border-color:transparent}
+.cat--family{color:#fff}
+.cat--family{background:linear-gradient(160deg,#1a3a12 0%,#0b1d0c 70%);min-height:560px}
+/* 學校 = 淺綠、家長 = 深綠 */
+.cat--school{min-height:560px;background:linear-gradient(160deg,#8CC63F 0%,#4F9A1C 100%);color:var(--night);border-color:transparent}
 .cat__orb{position:absolute;width:420px;height:420px;border-radius:50%;right:-120px;top:-120px;background:radial-gradient(circle at 35% 35%,rgba(216,245,168,.9),rgba(140,198,63,.4) 40%,transparent 70%);filter:blur(6px);z-index:-1;transition:transform 1s var(--ease)}
 .cat:hover .cat__orb{transform:scale(1.15) translate(-20px,20px)}
-.cat--environment .cat__orb{background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.7),transparent 65%)}
+.cat--school .cat__orb{background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.7),transparent 65%)}
 .cat__tag{font-size:13px;letter-spacing:.18em;font-weight:700;opacity:.7}
 .cat h3{font-size:clamp(32px,3.6vw,56px);font-weight:900;letter-spacing:-.02em;line-height:1.1;margin:10px 0 auto}
 .cat ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
 .cat li a{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.22);font-size:14.5px;background:rgba(255,255,255,.04);backdrop-filter:blur(4px);transition:.25s}
 .cat li a:hover{background:var(--lime);color:var(--night);border-color:var(--lime)}
-.cat--environment li a{border-color:rgba(7,18,10,.25);background:rgba(255,255,255,.2)}
-.cat--environment li a:hover{background:var(--night);color:#fff}
+.cat--school li a{border-color:rgba(7,18,10,.25);background:rgba(255,255,255,.2)}
+.cat--school li a:hover{background:var(--night);color:#fff}
 .cat__go{position:absolute;right:28px;bottom:28px;width:56px;height:56px;border-radius:50%;background:var(--lime);color:var(--night);display:grid;place-items:center;transition:transform .4s var(--ease)}
-.cat--environment .cat__go{background:var(--night);color:var(--lime)}
+.cat--school .cat__go{background:var(--night);color:var(--lime)}
 .cat:hover .cat__go{transform:rotate(-45deg) scale(1.08)}
 .cat__go svg{width:22px;height:22px}
 .cat ul{padding-right:70px}
@@ -371,7 +371,7 @@ section{position:relative}
   .sec-head,.news,.split{grid-template-columns:1fr}
   .sec-head p{justify-self:start}
   .bento{grid-template-columns:1fr}
-  .cat--family{grid-row:auto;min-height:520px}
+  .cat--family,.cat--school{min-height:480px}
   .stats{grid-template-columns:1fr}
   .stat{border-right:0;border-bottom:1px solid var(--line);padding:28px 0!important}
   .svc-row{grid-template-columns:56px 1fr 44px;gap:16px}
