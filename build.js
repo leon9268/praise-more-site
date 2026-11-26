@@ -495,5 +495,36 @@ const redirects = [
 write('_redirects', redirects.join('\n') + '\n');
 const urls = ['/', '/about/', '/services/', '/schools/', '/articles/', '/history/', '/contact/', ...D.services.map(svcUrl), ...A.map(artUrl)];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(u => `<url><loc>${SITE}${u}</loc><lastmod>${TODAY}</lastmod></url>`).join('')}</urlset>\n`);
+// llms.txt — plain-text site guide for AI search engines (https://llmstxt.org)
+const llmsSvc = c => byCat(c.id).map(x => `- [${x.name}](${SITE}${svcUrl(x)}): ${x.subtitle}`).join('\n');
+write('llms.txt', `# Praise More
+
+> ${S.description}
+
+Praise More（前身 Praise Education Centre）由${S.author ? ` ${S.author.name}（${S.author.nameEn}）` : ''}創辦，深耕香港教育 ${S.foundedYears} 年、服務超過 30,000 個家庭，為香港學校及家庭配對專業導師及支援服務。
+
+- 服務地區：香港
+- 服務對象：幼稚園、小學、中學、特殊學校，以及家長
+- 導師審查：${S.tutorCheck}；${S.tutorQual}
+- 學校報價：${S.replyPromise}，提供正式報價單、課程大綱及服務報告
+- 聯絡：WhatsApp／電話 ${S.phone}（+852 ${S.phone}）；電郵 ${S.email}
+- 語言：粵語、英語、普通話
+
+${D.categories.map(c => `## ${c.name}\n\n${llmsSvc(c)}`).join('\n\n')}
+
+## 學校專區
+
+- [學校服務專區及報價](${SITE}/schools/): ${D.schools.seoDesc}
+
+## 文章
+
+${A.map(a => `- [${a.title}](${SITE}${artUrl(a)}): ${a.desc}`).join('\n')}
+
+## 關於
+
+- [關於我們](${SITE}/about/): 使命、專業配對流程及承諾
+- [品牌歷程](${SITE}/history/): 由 Praise Education Centre 到 Praise More 的 ${S.foundedYears} 年發展及傳媒報道
+- [聯絡我們](${SITE}/contact/): WhatsApp、電話及電郵
+`);
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);
 console.log(`Built ${urls.length + 1} pages → dist/`);
