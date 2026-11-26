@@ -6,6 +6,10 @@ const path = require('path');
 const D = JSON.parse(fs.readFileSync(path.join(__dirname, 'content/site.json'), 'utf8'));
 const OUT = path.join(__dirname, 'dist');
 const S = D.site;
+// FAQ entries may be written as {q, a} or [q, a]; normalise to {q, a}
+const normFaq = f => Array.isArray(f) ? { q: f[0], a: f[1] } : f;
+if (D.schools?.faq) D.schools.faq = D.schools.faq.map(normFaq);
+D.services.forEach(x => { if (x.faq) x.faq = x.faq.map(normFaq); });
 const IMG = 'https://www.praise.com.hk/assets/images/uploads/';
 const WA = `https://api.whatsapp.com/send?phone=${S.whatsapp}&text=${encodeURIComponent(S.whatsappText)}`;
 const VER = Date.now().toString(36);
@@ -496,7 +500,17 @@ write('_redirects', redirects.join('\n') + '\n');
 const urls = ['/', '/about/', '/services/', '/schools/', '/articles/', '/history/', '/contact/', ...D.services.map(svcUrl), ...A.map(artUrl)];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(u => `<url><loc>${SITE}${u}</loc><lastmod>${TODAY}</lastmod></url>`).join('')}</urlset>\n`);
 // llms.txt — plain-text site guide for AI search engines (https://llmstxt.org)
-const llmsSvc = c => byCat(c.id).map(x => `- [${x.name}](${SITE}${svcUrl(x)}): ${x.subtitle}`).join('\n');
+const llmsSvc = c => byCat(c.id).map(x => `- [${x.name}](${SITE}${svcUrl(x)}): ${x.subtitle}。${x.summary || x.intro}`).join('\n');
+const plain = t => String(t ?? '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+const mdSection = sec => [
+  `### ${sec.h}`, sec.p && plain(sec.p),
+  sec.items && sec.items.map(([t, d]) => `- ${t ? `${t}：` : ''}${d || ''}`).join('\n'),
+  sec.groups && sec.groups.map(g => `**${g.title}**\n` + g.items.map(([t, d]) => `- ${t ? `${t}：` : ''}${d || ''}`).join('\n')).join('\n\n'),
+  sec.table && [`| ${sec.table.head.join(' | ')} |`, `|${sec.table.head.map(() => '---').join('|')}|`, ...sec.table.rows.map(r => `| ${r.join(' | ')} |`)].join('\n'),
+  sec.certs && sec.certs.map(x => `- ${x.title}${x.text ? `：${x.text}` : ''}${x.url ? `（${x.url}）` : ''}`).join('\n'),
+  sec.note && plain(sec.note), sec.after && plain(sec.after)
+].filter(Boolean).join('\n\n');
+const mdFaq = faq => faq && faq.length ? '### 常見問題\n\n' + faq.map(f => Array.isArray(f) ? { q: f[0], a: f[1] } : f).map(f => `**問：${f.q}**\n答：${f.a}`).join('\n\n') : '';
 write('llms.txt', `# Praise More
 
 > ${S.description}
@@ -509,6 +523,14 @@ Praise More（前身 Praise Education Centre）由${S.author ? ` ${S.author.name
 - 學校報價：${S.replyPromise}，提供正式報價單、課程大綱及服務報告
 - 聯絡：WhatsApp／電話 ${S.phone}（+852 ${S.phone}）；電郵 ${S.email}
 - 語言：粵語、英語、普通話
+
+## 重點資料
+
+- 收費：不設公開價目，按學校或家庭需要個別報價
+- 學校可配合的教育局津貼：${D.schools.funding.rows.map(r => `${r[0]}（${r[1]}）`).join('；')}
+- 學校保障：${D.schools.assurance.map(([t, x]) => `${t}——${x.replace(/。$/, '')}`).join('；')}
+- SEN 相關服務屬教育訓練，並非醫療診斷或治療
+- 完整內容（所有服務、常見問題及文章全文）：${SITE}/llms-full.txt
 
 ${D.categories.map(c => `## ${c.name}\n\n${llmsSvc(c)}`).join('\n\n')}
 
@@ -526,5 +548,22 @@ ${A.map(a => `- [${a.title}](${SITE}${artUrl(a)}): ${a.desc}`).join('\n')}
 - [品牌歷程](${SITE}/history/): 由 Praise Education Centre 到 Praise More 的 ${S.foundedYears} 年發展及傳媒報道
 - [聯絡我們](${SITE}/contact/): WhatsApp、電話及電郵
 `);
+write('llms-full.txt', [
+  `# Praise More — 完整內容\n\n> ${S.description}\n\n網站：${SITE}｜WhatsApp／電話 ${S.phone}｜電郵 ${S.email}｜${S.tutorCheck}；${S.tutorQual}`,
+  `## 關於我們\n\n${D.about.intro}\n\n${D.about.mission}\n\n### 專業配對流程\n\n${D.about.process.map((x, i) => `${i + 1}. ${x.t}——學校：${x.school}；家長：${x.parent}`).join('\n')}`,
+  ...D.categories.map(c => `## ${c.name}\n\n` + byCat(c.id).map(x => [
+    `### ${x.name}\n\n網址：${SITE}${svcUrl(x)}\n\n${x.subtitle}。${x.summary ? `${x.summary} ` : ''}${x.intro}`,
+    ...x.sections.map(mdSection).map(t => t.replace(/^### /, '#### ')),
+    mdFaq(x.faq).replace(/^### /, '#### '),
+    x.notice && `注意：${x.notice}`, x.disclaimer && '注意：此服務屬教育訓練，並非醫療診斷或治療。'
+  ].filter(Boolean).join('\n\n')).join('\n\n')),
+  `## 學校專區\n\n網址：${SITE}/schools/\n\n${D.schools.lead}\n\n### 可配合的教育局津貼（2026/27）\n\n| ${D.schools.funding.head.join(' | ')} |\n|---|---|---|\n${D.schools.funding.rows.map(r => `| ${r.join(' | ')} |`).join('\n')}\n\n${D.schools.funding.note}\n\n### 學校的保障\n\n${D.schools.assurance.map(([t, x]) => `- ${t}：${x}`).join('\n')}\n\n${mdFaq(D.schools.faq)}`,
+  `## 品牌歷程\n\n${D.history.lead}\n\n${D.history.milestones.map(m => `- ${m.tag}｜${m.title}：${m.text}`).join('\n')}`,
+  `## 文章\n\n` + A.map(a => [
+    `### ${a.title}\n\n網址：${SITE}${artUrl(a)}｜作者：${S.author ? `${S.author.name}（${S.author.nameEn}），${S.author.role}` : 'Praise More'}｜日期：${a.date}\n\n${a.desc}`,
+    a.body.map(([k, v]) => k === 'h2' ? `#### ${v}` : k === 'ul' ? v.map(x => `- ${x}`).join('\n') : k === 'ol' ? v.map((x, i) => `${i + 1}. ${x}`).join('\n') : plain(v)).join('\n\n'),
+    a.sources && `資料來源：${a.sources.map(([t, u]) => `${t}（${u}）`).join('；')}`
+  ].filter(Boolean).join('\n\n')).join('\n\n')
+].join('\n\n') + '\n');
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);
 console.log(`Built ${urls.length + 1} pages → dist/`);
